@@ -32,7 +32,7 @@ public class IntegrationTest {
 
     @Test
     public void testIds() {
-        int count = 43;
+        int count = 42;
         Publisher<Long> ids = Flux.fromStream(LongStream.range(0, count).boxed()).log();
 
         ClientRequest<Publisher<Long>> req =
