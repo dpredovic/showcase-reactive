@@ -31,8 +31,8 @@ public class IntegrationTest {
 
     @Test
     public void testIds() {
-        int count = 42;
-        Publisher<Long> ids = Flux.fromStream(LongStream.range(0, count).boxed()).log();
+        int count = 1000;
+        Publisher<Long> ids = Flux.fromStream(LongStream.range(0, count).boxed());
 
         Flux<TestDTO> dtoFlux =
             webClient.post().uri("/test").exchange(ids, Long.class).flatMap(resp -> resp.bodyToFlux(TestDTO.class));
