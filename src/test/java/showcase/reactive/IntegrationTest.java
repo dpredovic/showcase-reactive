@@ -47,14 +47,14 @@ public class IntegrationTest {
 
     @Test
     public void testId() {
-        long id = 1234L;
+        long id = 123L;
 
         Mono<TestDTO> dtoMono =
             webClient.get().uri("/test/{id}", id).exchange().then(resp -> resp.bodyToMono(TestDTO.class));
 
         StepVerifier.create(dtoMono).consumeNextWith(dto -> {
-            assertThat(dto.getId()).isEqualTo(1234L);
-            assertThat(dto.getDescription()).isEqualTo("Test-1234");
+            assertThat(dto.getId()).isEqualTo(123L);
+            assertThat(dto.getDescription()).isEqualTo("Test-123");
         }).verifyComplete();
     }
 

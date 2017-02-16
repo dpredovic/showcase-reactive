@@ -15,7 +15,7 @@ public class TestPersistenceConfig {
     @Bean
     CommandLineRunner setupMongodb(TestReactiveRepository repository) {
         return (p) -> {
-            int size = 10000;
+            int size = 1000;
             Long count = repository.count().block();
             if (count != size) {
                 repository.deleteAll().block();

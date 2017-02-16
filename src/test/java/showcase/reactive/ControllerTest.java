@@ -41,11 +41,11 @@ public class ControllerTest {
 
     @Test
     public void testId() {
-        Mono<TestDTO> dtoMono = controller.findById(1234L);
+        Mono<TestDTO> dtoMono = controller.findById(123L);
 
         StepVerifier.create(dtoMono).consumeNextWith(dto -> {
-            assertThat(dto.getId()).isEqualTo(1234L);
-            assertThat(dto.getDescription()).isEqualTo("Test-1234");
+            assertThat(dto.getId()).isEqualTo(123L);
+            assertThat(dto.getDescription()).isEqualTo("Test-123");
         }).expectComplete().verify();
     }
 }
