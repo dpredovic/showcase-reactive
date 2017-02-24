@@ -5,7 +5,10 @@ import org.junit.runner.RunWith;
 import org.reactivestreams.Publisher;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,12 +37,21 @@ public class IntegrationTest {
         int count = 1000;
         Publisher<Long> ids = Flux.fromStream(LongStream.range(0, count).boxed());
 
-        Flux<TestDTO> dtoFlux =
-            webClient.post().uri("/test").exchange(ids, Long.class).flatMap(resp -> resp.bodyToFlux(TestDTO.class));
+        WebTestClient client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
+        FluxExchangeResult<TestDTO> result = client.post()
+                                                   .uri("/test")
+                                                   .accept(MediaType.TEXT_EVENT_STREAM)
+                                                   .exchange(ids, Long.class)
+                                                   .expectStatus()
+                                                   .isOk()
+                                                   .expectHeader()
+                                                   .contentType(MediaType.TEXT_EVENT_STREAM)
+                                                   .expectBody(TestDTO.class)
+                                                   .returnResult();
 
         Set<Long> expectedIds = LongStream.range(0, count).boxed().collect(Collectors.toSet());
 
-        StepVerifier.create(dtoFlux).thenConsumeWhile(dto -> !expectedIds.isEmpty(), dto -> {
+        StepVerifier.create(result.getResponseBody()).thenConsumeWhile(dto -> !expectedIds.isEmpty(), dto -> {
             assertThat(dto.getDescription()).isEqualTo("Test-" + dto.getId());
             expectedIds.remove(dto.getId());
         }).expectComplete().verify(Duration.ofSeconds(60));
