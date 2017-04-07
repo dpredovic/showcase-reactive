@@ -40,8 +40,7 @@ public class IntegrationTest {
         WebTestClient client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
         FluxExchangeResult<TestDTO> result = client.post()
                                                    .uri("/test")
-                                                   .accept(MediaType.TEXT_EVENT_STREAM)
-                                                   .exchange(ids, Long.class)
+                                                   .accept(MediaType.TEXT_EVENT_STREAM).body(ids, Long.class).exchange()
                                                    .expectStatus()
                                                    .isOk()
                                                    .expectHeader()
