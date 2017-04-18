@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -47,19 +46,18 @@ public class ControllerTest {
 
         long id = 123L;
 
-        FluxExchangeResult<TestDTO> result = client.get()
-                                                   .uri("/test/{id}", id)
-                                                   .exchange()
-                                                   .expectStatus()
-                                                   .isOk()
-                                                   .expectHeader()
-                                                   .contentType(MediaType.APPLICATION_JSON_UTF8)
-                                                   .expectBody(TestDTO.class)
-                                                   .returnResult();
+        TestDTO dto = client.get()
+                            .uri("/test/{id}", id)
+                            .exchange()
+                            .expectStatus()
+                            .isOk()
+                            .expectHeader()
+                            .contentType(MediaType.APPLICATION_JSON_UTF8)
+                            .expectBody(TestDTO.class)
+                            .returnResult()
+                            .getResponseBody();
 
-        StepVerifier.create(result.getResponseBody()).consumeNextWith(dto -> {
-            assertThat(dto.getId()).isEqualTo(id);
-            assertThat(dto.getDescription()).isEqualTo("Test-" + id);
-        }).verifyComplete();
+        assertThat(dto.getId()).isEqualTo(id);
+        assertThat(dto.getDescription()).isEqualTo("Test-" + id);
     }
 }
