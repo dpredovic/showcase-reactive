@@ -19,7 +19,7 @@ public class TestPersistenceConfig {
             Long count = repository.count().block();
             if (count != size) {
                 repository.deleteAll().block();
-                repository.save(
+                repository.saveAll(
                     Flux.fromStream(LongStream.range(0, size).boxed()).map(id -> new TestDTO(id, "Test-" + id)))
                           .blockLast();
             }

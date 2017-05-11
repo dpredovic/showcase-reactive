@@ -21,11 +21,11 @@ public class TestController {
 
     @GetMapping(path = "/test/{id}")
     public Mono<TestDTO> findById(@PathVariable("id") Long id) {
-        return repository.findOne(id);
+        return repository.findById(id);
     }
 
     @PostMapping(path = "/test")
     public Flux<TestDTO> findByIds(@RequestBody Publisher<Long> ids) {
-        return repository.findAll(ids);
+        return repository.findAllById(ids);
     }
 }

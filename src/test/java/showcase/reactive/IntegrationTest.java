@@ -50,6 +50,7 @@ public class IntegrationTest {
                                      .returnResult()
                                      .getResponseBody();
 
+        assertThat(result).hasSize(count);
         Set<Long> expectedIds = LongStream.range(0, count).boxed().collect(Collectors.toSet());
         for (TestDTO dto : result) {
             assertThat(dto.getDescription()).isEqualTo("Test-" + dto.getId());
