@@ -63,10 +63,7 @@ public class IntegrationTest {
     public void testId() {
         long id = 123L;
 
-        Mono<TestDTO> dtoMono = webClient.get()
-                                         .uri("/test/{id}", id)
-                                         .exchange()
-                                         .flatMap(clientResponse -> clientResponse.bodyToMono(TestDTO.class));
+        Mono<TestDTO> dtoMono = webClient.get().uri("/test/{id}", id).retrieve().bodyToMono(TestDTO.class);
 
         StepVerifier.create(dtoMono).consumeNextWith(dto -> {
             assertThat(dto.getId()).isEqualTo(123L);
